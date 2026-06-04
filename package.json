@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "Policy-aware MCP server for the Ordrestyring GraphQL API.",
   "type": "module",
-  "main": "./dist/stdio.js",
+  "main": "./dist/transports/stdio.js",
+  "exports": {
+    ".": "./dist/transports/stdio.js",
+    "./gateway": {
+      "types": "./dist/gateway.d.ts",
+      "default": "./dist/gateway.js"
+    }
+  },
   "files": [
     "dist",
     "README.md",
@@ -12,10 +19,10 @@
     ".env.example"
   ],
   "bin": {
-    "mcp-server-ordrestyring": "./dist/stdio.js"
+    "mcp-server-ordrestyring": "./dist/transports/stdio.js"
   },
   "scripts": {
-    "build": "tsup src/transports/stdio.ts src/transports/http.ts --format esm --dts --clean --sourcemap",
+    "build": "tsup src/transports/stdio.ts src/transports/http.ts src/gateway.ts --format esm --dts --clean --sourcemap",
     "dev": "tsx src/transports/stdio.ts",
     "dev:http": "tsx src/transports/http.ts",
     "typecheck": "tsc --noEmit",
