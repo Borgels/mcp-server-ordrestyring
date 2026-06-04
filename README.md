@@ -318,6 +318,35 @@ Bearer token. You can override this with `MCP_HTTP_HOST`, `MCP_MAX_BODY_BYTES`,
 
 The MCP endpoint is `POST http://127.0.0.1:3000/mcp`.
 
+## Borgels Gateway Export
+
+`mcp-server-ordrestyring/gateway` exposes a small typed adapter for Borgels
+control-plane runtimes that need to wrap this server without copying connector
+logic.
+
+The gateway exports:
+
+- `ordrestyringGatewayTools`: stable unprefixed tool definitions with name,
+  title, description, risk level, default enablement, and JSON input schema.
+- `createOrdrestyringGateway(options)`: a factory that accepts the same
+  credential, base URL, timeout, and `fetchImpl` options as `OrdrestyringClient`.
+
+First-wedge gateway tools:
+
+- `check_connection`
+- `search_cases`
+- `get_case_health`
+- `find_billable_cases`
+- `get_invoice_readiness`
+- `create_customer` (disabled by default)
+- `delete_products` (disabled by default, destructive)
+
+The gateway reads credentials from the server environment or factory options,
+never from tool arguments. Write tools remain disabled unless
+`ORDRESTYRING_ENABLE_WRITES=true` and the write policy allows the underlying
+mutation. This makes the gateway suitable for Borgels review and fixture
+automation while preserving the same safety model as the full MCP server.
+
 ## Rate Limits
 
 Ordrestyring documents GraphQL rate limiting with `Retry-After`,
